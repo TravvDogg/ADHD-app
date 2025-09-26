@@ -26,6 +26,7 @@ struct ADHD_appApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+            HomePage()
         }
         .modelContainer(sharedModelContainer)
     }
