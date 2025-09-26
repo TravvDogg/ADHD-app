@@ -7,6 +7,16 @@
 
 import SwiftUI
 
+// MARK: - Constants
+private enum Constants {
+    static let dayViewSize = CGSize(width: 59, height: 92)
+    static let profileImageSize: CGFloat = 42
+    static let missionCardSize: CGFloat = 80
+    static let missionImageSize: CGFloat = 54
+}
+
+// MARK: - DayView
+/// Displays a single day cell in the horizontal scroll view.
 struct DayView: View {
     let day: Int
     let weekday: String
@@ -19,21 +29,17 @@ struct DayView: View {
                 .font(.caption)
             Text(weekday)
                 .font(.caption)
-            if day == 25 {
+            if isCompleted {
                 Image("day-completed")
                     .resizable()
-                    .aspectRatio(1, contentMode: .fill)
                     .scaledToFit()
                     .frame(width: 42, height: 42)
                     .clipShape(Circle())
             }
         }
-        .frame(width: 59, height: 92, alignment: .top)
+        .frame(width: Constants.dayViewSize.width, height: Constants.dayViewSize.height, alignment: .top)
         .padding(.vertical, 5)
-        .background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color(.systemGray5))
-        )
+        .background(RoundedRectangle(cornerRadius: 10).fill(Color(.systemGray5)))
         .overlay(
             RoundedRectangle(cornerRadius: 10)
                 .strokeBorder(isSelected ? Color.cyan : Color.clear, lineWidth: 2)
@@ -41,63 +47,57 @@ struct DayView: View {
     }
 }
 
+// MARK: - TodaysMissionCard
+/// Displays a mission card with an image and title.
 struct TodaysMissionCard: View {
     let imageName: String
     let title: String
-    
+
     var body: some View {
         VStack {
             ZStack {
                 RoundedRectangle(cornerRadius: 16)
                     .fill(Color(.systemGray5))
-                    .frame(width: 80, height: 80)
+                    .frame(width: Constants.missionCardSize, height: Constants.missionCardSize)
                 Image(imageName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 54, height: 54)
+                    .frame(width: Constants.missionImageSize, height: Constants.missionImageSize)
             }
-            
             Text(title)
                 .font(.caption)
                 .foregroundColor(.gray)
-                
         }
     }
 }
 
+// MARK: - TodaysMissionView
+/// Displays today's mission section with tasks and cards.
 struct TodaysMissionView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Title
             Text("Today's Mission")
                 .font(.title.bold())
-            
+
             VStack(alignment: .leading, spacing: 12) {
-            //Subtitle
-            HStack {
-                Text("Lets go out for a little walk and take a picture!")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                Spacer()
-                Image(systemName: "info.circle.fill")
-                    .foregroundColor(.blue)
-            }.padding()
-            
-            // Cards Row
-            .overlay( // Line
-                Rectangle()
-                    .frame(height: 1)
-                    .foregroundColor(Color(.systemGray5)),
-                alignment: .bottom
-                    )
-                // Cards
-                HStack() {
+                HStack {
+                    Text("Lets go out for a little walk and take a picture!")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                    Spacer()
+                    Image(systemName: "info.circle.fill")
+                        .foregroundColor(.blue)
+                }
+                .padding()
+                .overlay(Rectangle().frame(height: 1).foregroundColor(Color(.systemGray5)), alignment: .bottom)
+
+                HStack {
                     TodaysMissionCard(imageName: "imagesearch-rectangle", title: "Square")
                     TodaysMissionCard(imageName: "imagesearch-triangle", title: "Triangle")
                     TodaysMissionCard(imageName: "imagesearch-bicolor", title: "Blue & Green")
                     TodaysMissionCard(imageName: "imagesearch-smile", title: "A smily shape")
-                }.padding(.horizontal)
-
+                }
+                .padding(.horizontal)
             }
             .padding(.bottom, 12)
             .background(Color.white)
@@ -106,71 +106,74 @@ struct TodaysMissionView: View {
     }
 }
 
+// MARK: - HomePage
+/// The main home page view displaying user greeting, activity streak, and today's mission.
 struct HomePage: View {
     var body: some View {
         VStack(alignment: .leading) {
-            //MARK: - "Hi Joshua"
-            HStack {
-                Text("Hi Joshua").font(.largeTitle.bold()) // placeholder name and profile picture
-                
-                Spacer()
-                
-                Image("profile-picture")
-                    .resizable()
-                    .aspectRatio(1, contentMode: .fill)
-                    .scaledToFit()
-                    .frame(width: 42, height: 42)
-                    .clipShape(Circle())
-            }
-            
-            //MARK: - Activities
-            HStack {
-                VStack {
-                    Text("Activities")
-                        .font(.title2.bold())
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    
-                    Text("26 Aug") // Current date
-                        .foregroundColor(.gray)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
-                Spacer()
-                HStack {
-                    Image(systemName: "flame.fill")
-                        .foregroundColor(.orange)
-                    Text("25") // Streak
-                        .bold()
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color(.systemGray5))
-                .cornerRadius(12)
-            }
-            .padding(.bottom, 4)
-
-            
-            //TODO: - Make systematic
-            ScrollView(.horizontal, showsIndicators: false) { // Placeholder view
-                HStack(spacing: 3) {
-                    DayView(day: 25, weekday: "Mon", isCompleted: true, isSelected: false)
-                    DayView(day: 26, weekday: "Tue", isCompleted: false, isSelected: true)
-                    DayView(day: 27, weekday: "Wed", isCompleted: false, isSelected: false)
-                    DayView(day: 28, weekday: "Thu", isCompleted: false, isSelected: false)
-                    DayView(day: 29, weekday: "Fri", isCompleted: false, isSelected: false)
-                    DayView(day: 30, weekday: "Sat", isCompleted: false, isSelected: false)
-                    DayView(day: 1, weekday: "Sun", isCompleted: false, isSelected: false)
-                }
-                .padding(.vertical, 8)
-            }
-            
-            //MARK: - Today's Mission
+            headerSection
+            activitySection
+            daysScrollSection
             TodaysMissionView()
-            
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .padding(.all)
+        .padding()
         .background(Color(.systemGray6))
+    }
+}
+
+// MARK: - HomePage Subviews
+private extension HomePage {
+    var headerSection: some View {
+        HStack(alignment: .top) {
+            Text("Hi Joshua")
+                .font(.largeTitle.bold())
+            Spacer()
+            Image("profile-picture")
+                .resizable()
+                .aspectRatio(1, contentMode: .fill)
+                .scaledToFit()
+                .frame(width: Constants.profileImageSize, height: Constants.profileImageSize)
+                .clipShape(Circle())
+        }
+    }
+
+    var activitySection: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text("Activities")
+                    .font(.title.bold())
+                Text("26 Aug")
+                    .foregroundColor(.gray)
+            }
+            Spacer()
+            HStack {
+                Image(systemName: "flame.fill")
+                    .foregroundColor(.orange)
+                Text("25")
+                    .bold()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color(.systemGray5))
+            .cornerRadius(12)
+        }
+        .padding(.bottom, 4)
+    }
+
+    var daysScrollSection: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 3) {
+                DayView(day: 25, weekday: "Mon", isCompleted: true, isSelected: false)
+                DayView(day: 26, weekday: "Tue", isCompleted: false, isSelected: true)
+                DayView(day: 27, weekday: "Wed", isCompleted: false, isSelected: false)
+                DayView(day: 28, weekday: "Thu", isCompleted: false, isSelected: false)
+                DayView(day: 29, weekday: "Fri", isCompleted: false, isSelected: false)
+                DayView(day: 30, weekday: "Sat", isCompleted: false, isSelected: false)
+                DayView(day: 1, weekday: "Sun", isCompleted: false, isSelected: false)
+            }
+            .padding(.vertical, 8)
+        }
     }
 }
 
