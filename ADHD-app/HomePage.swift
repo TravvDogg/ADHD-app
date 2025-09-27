@@ -52,21 +52,30 @@ struct DayView: View {
 struct TodaysMissionCard: View {
     let imageName: String
     let title: String
+    @State private var showMissionModal = false
 
     var body: some View {
-        VStack {
-            ZStack {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(Color(.systemGray5))
-                    .frame(width: Constants.missionCardSize, height: Constants.missionCardSize)
-                Image(imageName)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: Constants.missionImageSize, height: Constants.missionImageSize)
+        Button(action: {
+            showMissionModal = true
+        }) {
+            VStack {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color(.systemGray5))
+                        .frame(width: Constants.missionCardSize, height: Constants.missionCardSize)
+                    Image(imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: Constants.missionImageSize, height: Constants.missionImageSize)
+                }
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.gray)
             }
-            Text(title)
-                .font(.caption)
-                .foregroundColor(.gray)
+        }
+        .sheet(isPresented: $showMissionModal) {
+            TodaysMission(missionTitle: title)
+                .presentationDetents([.medium, .large])
         }
     }
 }
@@ -95,7 +104,7 @@ struct TodaysMissionView: View {
                     TodaysMissionCard(imageName: "imagesearch-rectangle", title: "Square")
                     TodaysMissionCard(imageName: "imagesearch-triangle", title: "Triangle")
                     TodaysMissionCard(imageName: "imagesearch-bicolor", title: "Blue & Green")
-                    TodaysMissionCard(imageName: "imagesearch-smile", title: "A smily shape")
+                    TodaysMissionCard(imageName: "imagesearch-smile", title: "Smiley")
                 }
                 .padding(.horizontal)
             }
