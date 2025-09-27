@@ -9,6 +9,17 @@ import SwiftUI
 
 struct TodaysMission: View {
     let missionTitle: String
+    let missionImage: String
+    
+    init(
+        // Set defaults
+        missionTitle: String = "Default Title",
+        missionImage: String = "imagesearch-rectangle"
+    ) {
+        // Or use given values
+        self.missionTitle = missionTitle
+        self.missionImage = missionImage
+    }
     var body: some View {
         VStack(alignment: .leading) {
             Text("Today's Mission")
@@ -18,6 +29,24 @@ struct TodaysMission: View {
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(style: StrokeStyle(lineWidth: 2, dash: [6]))
                     .foregroundColor(.gray.opacity(0.5))
+                VStack {
+                    HStack {
+                        Spacer()
+                        ZStack{
+                            RoundedRectangle(cornerRadius: 12)
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(Color(.systemGray5))
+                            Image(missionImage)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 38, height: 38)
+                        }
+                        .padding([.top, .trailing], 8)
+                    }
+                    Spacer()
+                }
+
+//                RoundedRectangle(cornerRadius: 12)
                 
                 VStack {
                     Text("Capture something \(missionTitle) today!")
@@ -29,7 +58,7 @@ struct TodaysMission: View {
                         Label("Capture your day!", systemImage: "camera")
                             .padding(.horizontal, 12)
                             .padding(.vertical, 8)
-                            .background(Color.gray.opacity(0.1))
+                            .background(Color(.systemGray5))
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
@@ -43,5 +72,5 @@ struct TodaysMission: View {
 }
 
 #Preview {
-    TodaysMission(missionTitle: "(Type)")
+    TodaysMission()
 }

@@ -74,7 +74,7 @@ struct TodaysMissionCard: View {
             }
         }
         .sheet(isPresented: $showMissionModal) {
-            TodaysMission(missionTitle: title)
+            TodaysMission(missionTitle: title, missionImage: imageName)
                 .presentationDetents([.medium, .large])
         }
     }

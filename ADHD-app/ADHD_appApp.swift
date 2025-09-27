@@ -26,7 +26,7 @@ struct ADHD_appApp: App {
     var body: some Scene {
         WindowGroup {
             HomePage()
-            TodaysMission(missionTitle: "Example Mission")
+            TodaysMission()
         }
         .modelContainer(sharedModelContainer)
     }
