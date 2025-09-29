@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct TodaysMission: View {
+    @State private var showMissionNoteModal: Bool = false
+
     let missionTitle: String
     let missionImage: String
     
     init(
         // Set defaults
-        missionTitle: String = "Default Title",
+        missionTitle: String = "Default",
         missionImage: String = "imagesearch-rectangle"
     ) {
         // Or use given values
@@ -53,7 +55,7 @@ struct TodaysMission: View {
                         .font(.body)
                     
                     Button(action: {
-                        // capture action
+                        showMissionNoteModal = true
                     }) {
                         Label("Capture your day!", systemImage: "camera")
                             .padding(.horizontal, 12)
@@ -62,6 +64,9 @@ struct TodaysMission: View {
                             .cornerRadius(8)
                     }
                     .buttonStyle(.plain)
+                    .sheet(isPresented: $showMissionNoteModal) {
+                        TodaysMissionNote(missionTitle: missionTitle, missionImage: missionImage)
+                    }
                 }
                 .padding()
             }
