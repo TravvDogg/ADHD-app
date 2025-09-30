@@ -71,7 +71,8 @@ struct TodaysMission: View {
                 .padding()
             }
         }
-        .padding()
+        .padding(.top, 24)
+        .padding(.all)
         .background(Color(.systemGray6))
     }
 }
