@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // MARK: - Constants
 private enum Constants {
@@ -118,16 +119,45 @@ struct TodaysMissionView: View {
 // MARK: - HomePage
 /// The main home page view displaying user greeting, activity streak, and today's mission.
 struct HomePage: View {
+    @Environment(\.modelContext) private var modelContext
+    @State private var showResetAlert: Bool = false
+
+    @Query(sort: [SortDescriptor(\Capture.createdAt, order: .reverse)])
+    private var captures: [Capture]
+
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 34) {
             headerSection
-            activitySection
-            daysScrollSection
-            TodaysMissionView()
+            VStack() {
+                activitySection
+                daysScrollSection
+            }
+
+            if captures.isEmpty {
+                TodaysMissionView()
+//                    .foregroundStyle(.secondary)
+            } else {
+                VStack(alignment: .leading) {
+                    Text("Today's Journey")
+                        .font(.title.bold())
+                        .padding(.top, 8)
+                    ForEach(captures) { capture in
+                        CaptureCard(capture: capture)
+                    }
+                }
+            }
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .padding()
         .background(Color(.systemGray6))
+        .alert("Reset all journeys?", isPresented: $showResetAlert) {
+            Button("Delete All", role: .destructive) {
+                deleteAllJourneys()
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("This will permanently remove all of today's journeys and history.")
+        }
     }
 }
 
@@ -138,12 +168,18 @@ private extension HomePage {
             Text("Hi Joshua")
                 .font(.largeTitle.bold())
             Spacer()
-            Image("profile-picture")
-                .resizable()
-                .aspectRatio(1, contentMode: .fill)
-                .scaledToFit()
-                .frame(width: Constants.profileImageSize, height: Constants.profileImageSize)
-                .clipShape(Circle())
+            Button {
+                showResetAlert = true
+            } label: {
+                Image("profile-picture")
+                    .resizable()
+                    .aspectRatio(1, contentMode: .fill)
+                    .scaledToFit()
+                    .frame(width: Constants.profileImageSize, height: Constants.profileImageSize)
+                    .clipShape(Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityHidden(true)
         }
     }
 
@@ -183,6 +219,13 @@ private extension HomePage {
             }
             .padding(.vertical, 8)
         }
+    }
+
+    func deleteAllJourneys() {
+        for capture in captures {
+            modelContext.delete(capture)
+        }
+        try? modelContext.save()
     }
 }
 

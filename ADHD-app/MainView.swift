@@ -29,8 +29,7 @@ struct MainView: View {
                     Image(systemName: "house")
                     Text("Home")
                 }
-
-            Text("Journal Page Placeholder")
+            JournalView()
                 .tabItem {
                     Image(systemName: "magazine")
                     Text("Journal")
