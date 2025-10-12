@@ -16,6 +16,23 @@ private enum Constants {
     static let missionImageSize: CGFloat = 54
 }
 
+// MARK: - DateFormatters
+private enum DateFormatters {
+    static let weekdayShort: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = .current
+        df.setLocalizedDateFormatFromTemplate("EEE")
+        return df
+    }()
+
+    static let dayMonth: DateFormatter = {
+        let df = DateFormatter()
+        df.locale = .current
+        df.setLocalizedDateFormatFromTemplate("d MMM")
+        return df
+    }()
+}
+
 // MARK: - DayView
 /// Displays a single day cell in the horizontal scroll view.
 struct DayView: View {
@@ -163,6 +180,11 @@ struct HomePage: View {
 
 // MARK: - HomePage Subviews
 private extension HomePage {
+    var streak: Int {
+        // Default streak is 25; increment by 1 when there are captures
+        captures.isEmpty ? 25 : 26
+    }
+
     var headerSection: some View {
         HStack(alignment: .top) {
             Text("Hi Joshua")
@@ -188,14 +210,15 @@ private extension HomePage {
             VStack(alignment: .leading) {
                 Text("Activities")
                     .font(.title.bold())
-                Text("26 Aug")
+                Text(DateFormatters.dayMonth.string(from: Date()))
+            //                Text("26 Aug")
                     .foregroundColor(.gray)
             }
             Spacer()
             HStack {
                 Image(systemName: "flame.fill")
                     .foregroundColor(.orange)
-                Text("25")
+                Text("\(streak)")
                     .bold()
             }
             .padding(.horizontal, 12)
@@ -209,15 +232,37 @@ private extension HomePage {
     var daysScrollSection: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 3) {
-                DayView(day: 25, weekday: "Mon", isCompleted: true, isSelected: false)
-                DayView(day: 26, weekday: "Tue", isCompleted: false, isSelected: true)
-                DayView(day: 27, weekday: "Wed", isCompleted: false, isSelected: false)
-                DayView(day: 28, weekday: "Thu", isCompleted: false, isSelected: false)
-                DayView(day: 29, weekday: "Fri", isCompleted: false, isSelected: false)
-                DayView(day: 30, weekday: "Sat", isCompleted: false, isSelected: false)
-                DayView(day: 1, weekday: "Sun", isCompleted: false, isSelected: false)
+                ForEach(yesterdayAndNextFive(), id: \.timeIntervalSinceReferenceDate) { date in
+                    let dayNumber = Calendar.current.component(.day, from: date)
+                    let weekday = DateFormatters.weekdayShort.string(from: date)
+                    let isYesterday = Calendar.current.isDate(date, inSameDayAs: Calendar.current.date(byAdding: .day, value: -1, to: Date())!)
+                    let isToday = Calendar.current.isDateInToday(date)
+                    let completed = isYesterday ? true : (isToday ? !captures.isEmpty : hasCapture(on: date))
+                    DayView(
+                        day: dayNumber,
+                        weekday: weekday,
+                        isCompleted: completed,
+                        isSelected: isToday
+                    )
+                }
             }
             .padding(.vertical, 8)
+        }
+    }
+
+    func yesterdayAndNextFive() -> [Date] {
+        let calendar = Calendar.current
+        let today = Date()
+        // Start from yesterday (-1) through +5 days ahead: total 7 items
+        return (-1...5).compactMap { offset in
+            calendar.date(byAdding: .day, value: offset, to: today)
+        }
+    }
+
+    func hasCapture(on date: Date) -> Bool {
+        let calendar = Calendar.current
+        return captures.contains { capture in
+            calendar.isDate(capture.createdAt, inSameDayAs: date)
         }
     }
 
