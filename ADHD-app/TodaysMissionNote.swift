@@ -133,10 +133,6 @@ struct TodaysMissionNote: View {
                                     .font(.system(size: 48).bold())
                                     .foregroundStyle(Color(.systemGray2))
                                 
-                                Image(systemName: "plus.app.fill")
-                                    .font(.system(size: 24))
-                                    .offset(x: 24, y: 18)
-                                    .foregroundStyle(Color(.gray))
                             }
                         }
                     }
