@@ -18,7 +18,6 @@ struct JournalView: View {
             }
         }
         .padding()
-        .background(Color(.systemGray6))
     }
 }
 

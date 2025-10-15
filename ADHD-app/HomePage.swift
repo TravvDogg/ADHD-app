@@ -112,8 +112,6 @@ struct TodaysMissionView: View {
                         .font(.footnote)
                         .foregroundColor(.gray)
                     Spacer()
-                    Image(systemName: "info.circle.fill")
-                        .foregroundColor(.blue)
                 }
                 .padding()
                 .overlay(Rectangle().frame(height: 1).foregroundColor(Color(.systemGray5)), alignment: .bottom)

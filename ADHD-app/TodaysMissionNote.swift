@@ -65,9 +65,9 @@ struct TodaysMissionNote: View {
                 }
                 .padding()
                 
-                Text("41:12")
-                    .font(.caption)
-                    .padding(.bottom, 8)
+//                Text("41:12")
+//                    .font(.caption)
+//                    .padding(.bottom, 8)
                 
                 // Text field area
                 VStack(alignment: .leading) {
