@@ -9,12 +9,13 @@ import SwiftUI
 
 struct JournalView: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(spacing: 12) {
             Text("Journal")
                 .font(.largeTitle.bold())
+                .frame(maxWidth: .infinity, alignment: .center)
             ScrollView {
                 CaptureFeed()
-                    .padding(.vertical)
+//                    .padding(.vertical)
             }
         }
         .padding()

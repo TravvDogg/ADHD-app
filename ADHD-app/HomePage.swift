@@ -163,7 +163,7 @@ struct HomePage: View {
             }
         }
         .frame(maxHeight: .infinity, alignment: .top)
-        .padding()
+        .padding(24)
         .background(Color(.systemGray6))
         .alert("Reset all journeys?", isPresented: $showResetAlert) {
             Button("Delete All", role: .destructive) {

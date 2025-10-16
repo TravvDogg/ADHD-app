@@ -35,7 +35,7 @@ struct MainView: View {
                     Text("Journal")
                 }
 
-            Text("Summary Page Placeholder")
+            SummaryView()
                 .tabItem {
                     Image(systemName: "text.document")
                     Text("Summary")
